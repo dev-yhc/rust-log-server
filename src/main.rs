@@ -1,5 +1,4 @@
 use std::sync::RwLock;
-
 use actix_web::{ web, App, HttpResponse, HttpServer, Responder};
 
 async fn hello() -> impl Responder {
@@ -34,6 +33,7 @@ async fn main() -> std::io::Result<()> {
             )
     })
     .bind(("127.0.0.1", 8080))?
+    .shutdown_timeout(30) // <-- Allow 30 seconds for graceful shutdown
     .run()
     .await
 }
