@@ -2,14 +2,12 @@ use std::sync::RwLock;
 use std::io::Write;
 use actix_web::{ web, App, HttpResponse, HttpServer, Responder};
 use log::{info, LevelFilter};
-use std::fs::File;
 use chrono::Local;
 use env_logger::Builder;
 use env_logger::Target;
 use std::fs::OpenOptions;
 
 mod config;
-use config::AppConfig;
 
 async fn hello() -> impl Responder {
     info!("/hello");
@@ -27,8 +25,6 @@ async fn _healthcheck() -> impl Responder {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    // TODO: upload config
-    let config = AppConfig::load().expect("Failed to load config");
     // 로그 파일 생성
     std::fs::create_dir_all("logs")?;
     let log_file = OpenOptions::new()
@@ -56,7 +52,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(AppState {
-                app_name: config.app_name.clone(),
+                app_name: String::from("rust-log-server"),
                 counter: RwLock::new(0)
             }))
             .service(
@@ -68,7 +64,7 @@ async fn main() -> std::io::Result<()> {
                 .route("", web::get().to(hello))
             )
     })
-    .bind(("127.0.0.1", config.port))?
+    .bind(("0.0.0.0", 8080))?
     .shutdown_timeout(30) // <-- Allow 30 seconds for graceful shutdown
     .run()
     .await

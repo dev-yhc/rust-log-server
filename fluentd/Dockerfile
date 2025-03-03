@@ -12,8 +12,11 @@ COPY ./fluentd/conf/fluent.conf /fluentd/etc/
 
 # Create directories for logs
 RUN mkdir -p /fluentd/log
+RUN mkdir -p /app/logs
 
 # Set permissions
+RUN chmod 644 /app/logs
+RUN chown -R fluent:fluent /app/logs
 RUN chown -R fluent:fluent /fluentd/log
 
 # Switch back to fluent user

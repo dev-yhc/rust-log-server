@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y libssl-dev \
 
 # Copy the built binary from builder stage
 COPY --from=builder /usr/src/app/target/release/rust_log_server /usr/local/bin/
-COPY --from=builder /usr/src/app/config.yaml ./config.yaml
+COPY --from=builder /usr/src/app/config.yaml /usr/local/bin/config.yaml
 
 # Create logs directory
 RUN mkdir -p /app/logs
