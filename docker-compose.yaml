@@ -12,12 +12,22 @@ services:
       - RUST_LOG=info
     depends_on:
       - fluentd
+    networks:
+      - app-network
 
   fluentd:
-    image: fluent/fluentd:v1.14-1
+    build:
+      context: .
+      dockerfile: ./fluentd/Dockerfile
     volumes:
       - ./fluentd/conf:/fluentd/etc
-      - ./logs:/fluentd/log
+      - ./logs:/app/logs
     environment:
       - AWS_ACCESS_KEY_ID=your_access_key
       - AWS_SECRET_ACCESS_KEY=your_secret_key
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

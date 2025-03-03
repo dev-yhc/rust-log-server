@@ -6,6 +6,7 @@ use std::fs::File;
 use chrono::Local;
 use env_logger::Builder;
 use env_logger::Target;
+use std::fs::OpenOptions;
 
 mod config;
 use config::AppConfig;
@@ -30,7 +31,10 @@ async fn main() -> std::io::Result<()> {
     let config = AppConfig::load().expect("Failed to load config");
     // 로그 파일 생성
     std::fs::create_dir_all("logs")?;
-    let log_file = File::create("./logs/application.log")?;
+    let log_file = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open("./logs/application.log")?;
 
     // 로거 설정
     Builder::new()
