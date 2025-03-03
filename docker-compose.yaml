@@ -1,0 +1,23 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./logs:/app/logs
+    environment:
+      - RUST_LOG=info
+    depends_on:
+      - fluentd
+
+  fluentd:
+    image: fluent/fluentd:v1.14-1
+    volumes:
+      - ./fluentd/conf:/fluentd/etc
+      - ./logs:/fluentd/log
+    environment:
+      - AWS_ACCESS_KEY_ID=your_access_key
+      - AWS_SECRET_ACCESS_KEY=your_secret_key
